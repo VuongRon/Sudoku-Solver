@@ -226,39 +226,42 @@ public class main {
   }
   /**
 	*@brief Static method createSolution computes the solution for the input sudoku puzzle
-	*@details 
+	*@details Method employs brute force algorithm in order to determine the numeric values of empty spaces(represented by 0) in the input sudoku puzzle
 	*@return Integer array with some/all solutions to a sudoku puzzle
 	*
 	*
 	*/
   public static int[][] createSolution(int[][] puzzle) {
+	  //Computes by row hence for two dimensional array attempt row index is defined
     int[][] attempt = new int[9][];
+   //Copies numbers that occupy each row (each iteration of the loop represents a row)
     for (int i = 0; i < 9; i++)
       attempt[i] = puzzle[i].clone();
     int indexSize = 1;
     boolean assignment;
-    while (indexSize <= 9) {
+    while (indexSize <= 9) { 
+    	//For each element of each row the method calls possibleValues method to determine what numbers (0-9) could occupy that space (if integer value is 0 for particular i and j )
       assignment = false;
       for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
           int[] temp = possibleValues(attempt, i, j);
-          if (attempt[i][j] == 0 && temp.length == indexSize) {
-            int random = new Random().nextInt(temp.length);
+          if (attempt[i][j] == 0 && temp.length == indexSize) { //Conditional statement to check if space is empty and possible values belong in that row
+            int random = new Random().nextInt(temp.length); //Randomly selects one of the possible values
             attempt[i][j] = temp[random];
-            assignment = true;
+            assignment = true; //Indicates assignment si true and works
             // System.out.println("Puzzle at (" + i + "," + j + ") set to: "
             // + attempt[i][j] + " out of options: " + Arrays.toString(temp));
             if (temp.length > 1) {
-              return createSolution(attempt);
+              return createSolution(attempt); //Recursive call of method once assignment is done, this goes on until solution is found at which point it recursively returns all values
             }
           }
         }
       }
-      if (assignment == false) {
+      if (assignment == false) { //Loop goes on if assignment is false
         indexSize++;
       }
 
-    }
+    }//If no possible solution, application guesses a random number, to make an opening for the program to reveal other possibilities.
     for (int i = 0; i < 9; i++) {
       for (int j = 0; j < 9; j++) {
         if (attempt[i][j] == 0) {
@@ -266,23 +269,25 @@ public class main {
           attempt[i][j] = random;
           // System.out.println("Puzzle at (" + i + "," + j + ") set to: "
           // + attempt[i][j] + " randomly.");
-          return createSolution(attempt);
+          return createSolution(attempt); //Recursive method call
         }
       }
     }
-    return attempt;
+    return attempt; //Method returns two dimensional array attempt, which may or may not have all empty spaces occupied
   }
   /**
 	*@brief Static method possibleValues determines what possible values can be used to fill a square in the sudoku puzzle
-	*@details
+	*@details Determines the possible values that could occupy an empty element space in the sudoku puzzle based on the numbers around it 
 	*@return integer array with all possible values
 	*
 	*/
   public static int[] possibleValues(int[][] puzzle, int X, int Y) {
+	  //Instantiates integer array dud 
     int[] dud = new int[0];
-    if (puzzle[X][Y] != 0) {
+    if (puzzle[X][Y] != 0) { //method returns empty array if the space corresponding to row index X and column index Y is not empty (ie. 0)
       return dud;
     }
+    //Takes row value and compares it with other row values
     int[] numsX = puzzle[X];
     // System.out.println("These are the values for the row observing row X = "
     // + X + ": " + Arrays.toString(numsX));
@@ -296,6 +301,7 @@ public class main {
     // System.out.println("These are the values for the column observing column Y = "
     // + Y + ": " + Arrays.toString(numsY));
     // promptEnterKey();
+    //Takes value in box/square gird and checks it along otherboxes
     int[] numsBox = new int[9];
     int boxLocationX = X / 3;
     int boxLocationY = Y / 3;
@@ -315,6 +321,8 @@ public class main {
     // System.out.println("These are the values for the box observing the box for coordinates ("
     // + X + "," + Y + "): " + Arrays.toString(numsBox));
     // promptEnterKey();
+    
+    //Makes comparisons with all the values a space can occupy
     int[] possibleValues = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     for (int i = 0; i < 9; i++) {
@@ -337,6 +345,7 @@ public class main {
         count++;
       }
     }
+    //Compiles all possible values into one 
     int[] finalValues = new int[count];
     count = 0;
     for (int i = 0; i < 9; i++) {
@@ -348,7 +357,7 @@ public class main {
     // System.out.println("These are the final possible values without zeroes: "
     // + Arrays.toString(finalValues));
     // promptEnterKey();
-    return finalValues;
+    return finalValues; //Returns final values to source method call 
   }
 
 }
